@@ -9,11 +9,10 @@ namespace gaadi_ghoda_server.Controllers
     public class AuthController : ControllerBase
     {
         [HttpPost("Login")]
-        public bool loginUser([FromBody] LoginCredentials loginCredentials)
+        public LoginResponse loginUser([FromBody] LoginCredentials loginCredentials)
         {
             AuthService authService = new AuthService();
-            var validLogin = authService.loginUser(loginCredentials);
-            return validLogin;
+            return authService.loginUser(loginCredentials);
         }
     }
 }

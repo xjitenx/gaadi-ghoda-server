@@ -8,11 +8,11 @@ namespace gaadi_ghoda_server.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpGet("Profile")]
-        public User getUserProfile([FromBody] string userId)
+        [HttpPost("Profile")]
+        public User getUserProfile([FromBody] User user)
         {
             UserService authService = new UserService();
-            var userProfile = authService.getUserProfile(userId);
+            var userProfile = authService.getUserProfile(user.Id);
             return userProfile;
         }
     }

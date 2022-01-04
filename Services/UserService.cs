@@ -9,7 +9,7 @@ namespace gaadi_ghoda_server.Services
 {
     public class UserService
     {
-        public User getUserProfile(string userId)
+        public User getUserProfile(Guid userId)
         {
             User userProfile = new User();
             using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
