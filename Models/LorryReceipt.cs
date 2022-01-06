@@ -7,6 +7,7 @@ namespace gaadi_ghoda_server.Models
 {
     public class LorryReceipt
     {
+        public Guid OrgId { get; set; }
         public Guid Id { get; set; }
         public int No { get; set; }
         public string Origin { get; set; }
@@ -14,7 +15,7 @@ namespace gaadi_ghoda_server.Models
         public string VehicleNo { get; set; }
         public double Weight { get; set; }
         public double Rate { get; set; }
-        public double Freight { get; set; }
         public Guid PartyId { get; set; }
+        public Guid BrokerId { get; set; }
     }
 }

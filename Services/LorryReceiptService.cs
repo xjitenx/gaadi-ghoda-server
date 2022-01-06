@@ -21,12 +21,13 @@ namespace gaadi_ghoda_server.Services
                     using (var command = connection.CreateCommand())
                     {
                         //use command here
-                        command.CommandText = "select * from public.tbl_lorry_receipt where org_id=XYZ";
+                        command.CommandText = "select * from public.tbl_lorry_receipt where org_id='" + AppConstants.ORG_ID + "'";
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 LorryReceipt lorryReceiptItem = new LorryReceipt();
+                                lorryReceiptItem.OrgId = reader.GetGuid(reader.GetOrdinal("org_id"));
                                 lorryReceiptItem.Id = reader.GetGuid(reader.GetOrdinal("lorry_receipt_id"));
                                 lorryReceiptItem.No = reader.GetInt32(reader.GetOrdinal("lorry_receipt_no"));
                                 lorryReceiptItem.Origin = reader.GetString(reader.GetOrdinal("lorry_receipt_origin"));
@@ -34,8 +35,8 @@ namespace gaadi_ghoda_server.Services
                                 lorryReceiptItem.VehicleNo = reader.GetString(reader.GetOrdinal("lorry_receipt_vehicle_no"));
                                 lorryReceiptItem.Weight = reader.GetDouble(reader.GetOrdinal("lorry_receipt_weight"));
                                 lorryReceiptItem.Rate = reader.GetDouble(reader.GetOrdinal("lorry_receipt_rate"));
-                                lorryReceiptItem.Freight = reader.GetDouble(reader.GetOrdinal("lorry_receipt_freight"));
                                 lorryReceiptItem.PartyId = reader.GetGuid(reader.GetOrdinal("lorry_receipt_party_id"));
+                                lorryReceiptItem.BrokerId = reader.GetGuid(reader.GetOrdinal("lorry_receipt_broker_id"));
                                 lorryReceiptList.Add(lorryReceiptItem);
                             }
                         }
@@ -50,7 +51,7 @@ namespace gaadi_ghoda_server.Services
             return lorryReceiptList;
         }
 
-        public int saveLorryReceipt(List<LorryReceipt> lorryReceiptList)
+        public void saveLorryReceipt(LorryReceipt lorryReceipt)
         {
             try
             {
@@ -65,26 +66,24 @@ namespace gaadi_ghoda_server.Services
                             command.CommandType = CommandType.Text;
 
                             command.CommandText = "insert into public.tbl_lorry_receipt" +
-                                "(lorry_receipt_origin, lorry_receipt_destination, lorry_receipt_vehicle_no, lorry_receipt_weight, lorry_receipt_rate, lorry_receipt_freight, lorry_receipt_party_id)" +
+                                "(org_id, lorry_receipt_origin, lorry_receipt_destination, lorry_receipt_vehicle_no, lorry_receipt_weight, lorry_receipt_rate, lorry_receipt_party_id, lorry_receipt_broker_id)" +
                                 "values " +
-                                "(@lorryReceiptOrigin, @lorryReceiptDestination, @lorryReceiptVehicleNo, @lorryReceiptWeight, @lorryReceiptRate, @lorryReceiptFreight, @lorryReceiptPartyId)";
+                                "(@orgId, @lorryReceiptOrigin, @lorryReceiptDestination, @lorryReceiptVehicleNo, @lorryReceiptWeight, @lorryReceiptRate, @lorryReceiptPartyId, @lorryReceiptBrokerId)";
                             try
                             {
-                                lorryReceiptList.ForEach((lorryReceipt) =>
-                                {
-                                    command.Parameters.AddWithValue("@lorryReceiptOrigin", lorryReceipt.Origin);
-                                    command.Parameters.AddWithValue("@lorryReceiptDestination", lorryReceipt.Destination);
-                                    command.Parameters.AddWithValue("@lorryReceiptVehicleNo", lorryReceipt.VehicleNo);
-                                    command.Parameters.AddWithValue("@lorryReceiptWeight", lorryReceipt.Weight);
-                                    command.Parameters.AddWithValue("@lorryReceiptRate", lorryReceipt.Rate);
-                                    command.Parameters.AddWithValue("@lorryReceiptFreight", lorryReceipt.Freight);
-                                    command.Parameters.AddWithValue("@lorryReceiptPartyId", lorryReceipt.PartyId);
+                                command.Parameters.AddWithValue("@orgId", lorryReceipt.OrgId);
+                                command.Parameters.AddWithValue("@lorryReceiptOrigin", lorryReceipt.Origin);
+                                command.Parameters.AddWithValue("@lorryReceiptDestination", lorryReceipt.Destination);
+                                command.Parameters.AddWithValue("@lorryReceiptVehicleNo", lorryReceipt.VehicleNo);
+                                command.Parameters.AddWithValue("@lorryReceiptWeight", lorryReceipt.Weight);
+                                command.Parameters.AddWithValue("@lorryReceiptRate", lorryReceipt.Rate);
+                                command.Parameters.AddWithValue("@lorryReceiptPartyId", lorryReceipt.PartyId);
+                                command.Parameters.AddWithValue("@lorryReceiptBrokerId", lorryReceipt.BrokerId);
 
-                                    if (command.ExecuteNonQuery() != 1)
-                                    {
-                                        throw new InvalidProgramException();
-                                    }
-                                });
+                                if (command.ExecuteNonQuery() != 1)
+                                {
+                                    throw new InvalidProgramException();
+                                }
                                 transaction.Commit();
                             }
                             catch(Exception)
@@ -102,7 +101,6 @@ namespace gaadi_ghoda_server.Services
             {
                 Console.WriteLine(e);
             }
-            return lorryReceiptList.Count;
         }
     }
 }

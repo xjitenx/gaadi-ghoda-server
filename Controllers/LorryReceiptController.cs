@@ -12,19 +12,14 @@ namespace gaadi_ghoda_server.Controllers
         public List<LorryReceipt> getLorryReceipt()
         {
             LorryReceiptService lorryReceiptService = new LorryReceiptService();
-            var lorryReceiptList = lorryReceiptService.getLorryReceiptList();
-            return lorryReceiptList;
+            return lorryReceiptService.getLorryReceiptList();
         }
 
         [HttpPost("LorryReceipt")]
-        public int addLorryReceipt([FromBody] List<LorryReceipt> lorryReceiptList)
+        public void addLorryReceipt([FromBody] LorryReceipt lorryReceipt)
         {
             LorryReceiptService lorryReceiptService = new LorryReceiptService();
-            if (lorryReceiptList.Count > 0)
-            {
-                return lorryReceiptService.saveLorryReceipt(lorryReceiptList);
-            }
-            return 0;
+            lorryReceiptService.saveLorryReceipt(lorryReceipt);
         }
     }
 }

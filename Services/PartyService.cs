@@ -20,7 +20,7 @@ namespace gaadi_ghoda_server.Services
                     using (var command = connection.CreateCommand())
                     {
                         //use command here
-                        command.CommandText = "select * from public.tbl_bookie_party where org_id='e5723075-e5ad-4d56-908e-713a8343ee17'";
+                        command.CommandText = "select * from public.tbl_bookie_party where org_id='" + AppConstants.ORG_ID + "'";
                         using (NpgsqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
