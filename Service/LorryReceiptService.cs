@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using gaadi_ghoda_server.Models;
 
-namespace gaadi_ghoda_server.Services
+namespace gaadi_ghoda_server.Service
 {
     public class LorryReceiptService
     {

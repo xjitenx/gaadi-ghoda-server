@@ -1,7 +1,15 @@
+using gaadi_ghoda_server.IRepository;
+using gaadi_ghoda_server.IService;
+using gaadi_ghoda_server.Repository;
+using gaadi_ghoda_server.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

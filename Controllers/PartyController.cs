@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using gaadi_ghoda_server.Models;
-using gaadi_ghoda_server.Services;
+using gaadi_ghoda_server.Service;
 
 namespace gaadi_ghoda_server.Controllers
 {

@@ -7,17 +7,8 @@ namespace gaadi_ghoda_server.Models
 {
     public class User
     {
-        public User()
-        {
-            Alias = "";
-            FirstName = "";
-            LastName = "";
-            EmailId = "";
-            ContactNo = "";
-        }
         public Guid OrgId { get; set; }
         public Guid Id { get; set; }
-        public string Alias { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailId { get; set; }
