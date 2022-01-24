@@ -1,31 +1,31 @@
-﻿using gaadi_ghoda_server.IRepository;
+﻿using gaadi_ghoda_server.IRepository.IBrokerRepository;
 using gaadi_ghoda_server.Models;
 
-namespace gaadi_ghoda_server.Repository
+namespace gaadi_ghoda_server.Repository.BrokerRepository
 {
-    public class BrokerRepository : IBrokerRepository
+    public class BrokerPartyRepository : IBrokerPartyRepository
     {
-        public Task<Broker> Save(Broker broker)
+        public Task<Party> Delete(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Broker> Get(Guid id)
+        public Task<Party> Get(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Broker>> Gets()
+        public Task<List<Party>> Gets()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Broker> Update(Broker broker)
+        public Task<Party> Save(Party party)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Broker> Delete(Guid id)
+        public Task<Party> Update(Party party)
         {
             throw new NotImplementedException();
         }

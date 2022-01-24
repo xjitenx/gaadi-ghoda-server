@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using gaadi_ghoda_server.Models;
-using gaadi_ghoda_server.IService;
 using System.Net;
+using gaadi_ghoda_server.IService.ICommonService;
 
 namespace gaadi_ghoda_server.Controllers
 {
@@ -18,6 +18,7 @@ namespace gaadi_ghoda_server.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> loginUser([FromBody] AuthRequest authRequest)
         {
+            User _user;
             try
             {
                 if (!ModelState.IsValid)
@@ -25,17 +26,17 @@ namespace gaadi_ghoda_server.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (!authRequest.isValid())
+                if (!_authService.isValidCredentials(authRequest.LoginId, authRequest.Password))
                 {
                     return Unauthorized();
                 }
 
-                User user = await _authService.login(authRequest);
-                if (user == null)
+                _user = await _authService.isValidUserCredentials(authRequest);
+                if (_user == null || _user.Id == Guid.Empty)
                 {
-                    return NotFound("Wrong credentials entered, please retry.");
+                    return Unauthorized();
                 }
-                return Ok(user);
+                return Ok(_user);
             }
             catch (Exception e)
             {

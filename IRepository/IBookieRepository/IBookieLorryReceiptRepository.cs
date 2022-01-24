@@ -1,13 +1,13 @@
 ﻿using gaadi_ghoda_server.Models;
 
-namespace gaadi_ghoda_server.IRepository
+namespace gaadi_ghoda_server.IRepository.IBookieRepository
 {
-    public interface ILorryReceiptRepository
+    public interface IBookieLorryReceiptRepository
     {
         Task<LorryReceipt> Save(LorryReceipt lorryReceipt);
         Task<LorryReceipt> Get(Guid id);
         Task<List<LorryReceipt>> Gets();
         Task<LorryReceipt> Update(LorryReceipt lorryReceipt);
-        Task<LorryReceipt> Delete(Guid id);
+        Task<int> Delete(Guid id);
     }
 }

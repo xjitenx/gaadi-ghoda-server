@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data;
-using Npgsql;
+﻿using gaadi_ghoda_server.IRepository.IBookieRepository;
 using gaadi_ghoda_server.Models;
+using Npgsql;
+using System.Data;
 
-namespace gaadi_ghoda_server.Service
+namespace gaadi_ghoda_server.Repository.BookieRepository
 {
-    public class BrokerService
+    public class BookieBrokerRepository : IBookieBrokerRepository
     {
-        public List<Broker> getBrokerList()
+        public Task<Broker> Get(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Broker>> Gets()
         {
             List<Broker> brokerList = new List<Broker>();
             try
@@ -20,16 +23,16 @@ namespace gaadi_ghoda_server.Service
                     using (var command = connection.CreateCommand())
                     {
                         //use command here
-                        command.CommandText = "select * from public.tbl_bookie_broker where org_id='"+ AppConstants.ORG_ID +"'";
-                        using (NpgsqlDataReader reader = command.ExecuteReader())
+                        command.CommandText = "select * from public.tbl_bookie_broker where org_id='" + AppConstants.ORG_ID + "'";
+                        using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             while (reader.Read())
                             {
                                 Broker brokerItem = new Broker();
                                 brokerItem.Id = reader.GetGuid(reader.GetOrdinal("broker_id"));
                                 brokerItem.Name = reader.GetString(reader.GetOrdinal("broker_name"));
-                                brokerItem.PersonFirstName = reader.GetString(reader.GetOrdinal("broker_person_first_name"));
-                                brokerItem.PersonLastName = reader.GetString(reader.GetOrdinal("broker_person_last_name"));
+                                brokerItem.FirstName = reader.GetString(reader.GetOrdinal("broker_person_first_name"));
+                                brokerItem.LastName = reader.GetString(reader.GetOrdinal("broker_person_last_name"));
                                 brokerItem.EmailId = reader.GetString(reader.GetOrdinal("broker_email_id"));
                                 brokerItem.ContactNo = reader.GetString(reader.GetOrdinal("broker_contact_no"));
                                 brokerItem.Address = reader.GetString(reader.GetOrdinal("broker_address"));
@@ -51,7 +54,7 @@ namespace gaadi_ghoda_server.Service
             return brokerList;
         }
 
-        public void saveBroker(Broker broker)
+        public async Task<Broker> Save(Broker broker)
         {
             try
             {
@@ -71,10 +74,10 @@ namespace gaadi_ghoda_server.Service
                                 "(@orgId, @brokerName, @brokerPersonFirstName, @brokerPersonLastName, @brokerEmailId, @brokerContactNo, @brokerAddress, @brokerCountry, @brokerState, @brokerCity, @brokerZipCode)";
                             try
                             {
-                                command.Parameters.AddWithValue("@orgId", broker.OrgId);
+                                command.Parameters.AddWithValue("@orgId", "ORG_ID");
                                 command.Parameters.AddWithValue("@brokerName", broker.Name);
-                                command.Parameters.AddWithValue("@brokerPersonFirstName", broker.PersonFirstName);
-                                command.Parameters.AddWithValue("@brokerPersonLastName", broker.PersonLastName);
+                                command.Parameters.AddWithValue("@firstName", broker.FirstName);
+                                command.Parameters.AddWithValue("@lastName", broker.LastName);
                                 command.Parameters.AddWithValue("@brokerEmailId", broker.EmailId);
                                 command.Parameters.AddWithValue("@brokerContactNo", broker.ContactNo);
                                 command.Parameters.AddWithValue("@brokerAddress", broker.Address);
@@ -82,7 +85,7 @@ namespace gaadi_ghoda_server.Service
                                 command.Parameters.AddWithValue("@brokerState", broker.State);
                                 command.Parameters.AddWithValue("@brokerCity", broker.City);
                                 command.Parameters.AddWithValue("@brokerZipCode", broker.ZipCode);
-                                if (command.ExecuteNonQuery() != 1)
+                                if (await command.ExecuteNonQueryAsync() != 1)
                                 {
                                     throw new InvalidOperationException();
                                 }
@@ -103,6 +106,17 @@ namespace gaadi_ghoda_server.Service
             {
                 Console.WriteLine(e);
             }
+            return broker;
+        }
+
+        public Task<Broker> Update(Broker broker)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> Delete(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

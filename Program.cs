@@ -1,7 +1,7 @@
-using gaadi_ghoda_server.IRepository;
-using gaadi_ghoda_server.IService;
-using gaadi_ghoda_server.Repository;
-using gaadi_ghoda_server.Service;
+using gaadi_ghoda_server.IRepository.ICommonRepository;
+using gaadi_ghoda_server.IService.ICommonService;
+using gaadi_ghoda_server.Repository.CommonRepository;
+using gaadi_ghoda_server.Service.CommonServie;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
