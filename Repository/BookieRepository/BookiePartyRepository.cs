@@ -1,7 +1,6 @@
 ﻿using gaadi_ghoda_server.IRepository.IBookieRepository;
 using gaadi_ghoda_server.Models;
 using Npgsql;
-using gaadi_ghoda_server.Models;
 using Dapper;
 using System.Data;
 
@@ -16,44 +15,22 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             _connectionString = configuration.GetConnectionString("GaadiGhodaDb");
         }
 
-        public async Task<Party> Save(Party party)
+        public async Task<Party> Get(Guid id)
         {
+            Party _party = new Party();
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string commandText = "INSERT INTO public.tbl_bookie_party " +
-                            "(org_id, party_name, party_email_id, party_person_first_name ,party_person_last_name, party_contact_no, party_address, party_country, party_state, party_city, party_zip_code) " +
-                            "VALUES " +
-                            "(@orgId, @partyName, @partyPersonFirstName, @partyPersonLastName, @partyEmailId, @partyContactNo, @partyAddress, @partyCountry, @partyState, @partyCity, @partyZipCode)";
+                string commandText = "SELECT * FROM public.TblBookieParty WHERE OrgId=@orgId and BookieId=@bookieId and Id=@id";
 
-                await connection.ExecuteAsync(commandText, party);
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _party = await connection.QueryFirstAsync<Party>(commandText, parameters);
+
                 connection.Close();
-            }
-            return party;
-        }
-
-        public async Task<Party> Get(Guid id)
-        {
-            Party _party = new Party();
-            try
-            {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
-
-                    string commandText = "select * from public.tbl_bookie_party where party_id=@partyId";
-
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@partyId", id, DbType.String, ParameterDirection.Input, 64);
-                    _party = await connection.QueryFirstOrDefaultAsync<Party>(commandText, parameters);
-
-                    connection.Close();
-                }
-            }
-            catch
-            {
-                throw;
             }
             return _party;
         }
@@ -61,26 +38,37 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
         public async Task<List<Party>> Gets()
         {
             List<Party> _partyList = new List<Party>();
-            try
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    string commandText = "select * from public.tbl_bookie_party where org_id='" + AppConstants.ORG_ID + "'";
+                string commandText = "SELECT * FROM public.TblBookieParty WHERE OrgId=@orgId and BookieId=@bookieId";
 
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@orgId", "ORG_ID", DbType.String, ParameterDirection.Input, 64);
-                    _partyList = await connection.QueryFirstOrDefaultAsync<List<Party>>(commandText, parameters);
-                    
-                    connection.Close();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                _partyList = (await connection.QueryAsync<Party>(commandText, parameters)).ToList();
+
+                connection.Close();
             }
             return _partyList;
+        }
+
+        public async Task<Party> Save(Party party)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string commandText = "INSERT INTO public.TblBookieParty " +
+                            "(OrgID, BookieId, FirmName, FirstName, LastName, EmailId, ContactNo, Address, Country, State, City, ZipCode) " +
+                            "VALUES " +
+                            "(xxORG_ID, xxBOOKIE_ID, @firmName, @firstName, @lastName, @emailId, @contactNo, @address, @country, @state, @city, @zipCode)";
+
+                await connection.ExecuteAsync(commandText, party);
+                connection.Close();
+            }
+            return party;
         }
 
         public Task<Party> Update(Party party)
@@ -88,9 +76,22 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             throw new NotImplementedException();
         }
 
-        public Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            int _result;
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string commandText = "DELETE FROM public.TblBookieParty WHERE OrgId=@OrgId and BookieId=@bookieId and Id=@id";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _result = await connection.ExecuteAsync(commandText, parameters);
+                connection.Close();
+            }
+            return _result;
         }
     }
 }

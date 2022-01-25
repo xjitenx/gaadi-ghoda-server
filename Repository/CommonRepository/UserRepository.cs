@@ -8,57 +8,65 @@ namespace gaadi_ghoda_server.Repository.CommonRepository
 {
     public class UserRepository : IUserRepository
     {
-        public Task<User> Save(User user)
+        private readonly string _connectionString;
+
+        public UserRepository(IConfiguration configuration)
         {
-            throw new NotImplementedException();
+            _connectionString = configuration.GetConnectionString("GaadiGhodaDb");
         }
 
         public async Task<User> Get(Guid id)
         {
             User _user = new User();
-            try
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    var commandText = "select org_id as OrgId, user_id as Id, user_first_name as FirstName, user_last_name as LastName, user_email_id as EmailId, user_contact_no as ContactNo from public.tbl_user where user_id = @userId";
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@userId", id, DbType.String, ParameterDirection.Input, 64);
-                    _user = await connection.QueryFirstOrDefaultAsync<User>(commandText, parameters);
+                string commandText = "SELECT *, CASE WHEN t.EnabledYN = 'Y' THEN 'Active' ELSE 'InActive' END AS Status FROM public.TblUser WHERE OrgId=@orgId and Id=@id";
 
-                    connection.Close();
-                }
-            }
-            catch
-            {
-                throw;
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _user = await connection.QueryFirstAsync<User>(commandText, parameters);
+
+                connection.Close();
             }
             return _user;
         }
 
         public async Task<List<User>> Gets()
         {
-            List<User> _user = new List<User>();
-            try
+            List<User> _userList = new List<User>();
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    var commandText = "select org_id as OrgId, user_id as Id, user_first_name as FirstName, user_last_name as LastName, user_email_id as EmailId, user_contact_no as ContactNo from public.tbl_user where org_id = @orgId";
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@orgId", "ORG_ID", DbType.String, ParameterDirection.Input, 64);
-                    _user = await connection.QueryFirstOrDefaultAsync<List<User>>(commandText, parameters);
+                string commandText = "SELECT * FROM public.TblUser WHERE OrgId=@orgId";
 
-                    connection.Close();
-                }
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                _userList = (await connection.QueryAsync<User>(commandText, parameters)).ToList();
+
+                connection.Close();
             }
-            catch
+            return _userList;
+        }
+
+        public async Task<User> Save(User user)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                throw;
+                connection.Open();
+
+                string commandText = "INSERT INTO public.TblUser " +
+                            "(OrgID, FirstName, LastName, EmailId, ContactNo, EnabledYN) " +
+                            "VALUES " +
+                            "(xxORG_ID, @firstName, @lastName, @emailId, @contactNo, 'Y')";
+
+                await connection.ExecuteAsync(commandText, user);
+                connection.Close();
             }
-            return _user;
+            return user;
         }
 
         public Task<User> Update(User user)
@@ -66,9 +74,22 @@ namespace gaadi_ghoda_server.Repository.CommonRepository
             throw new NotImplementedException();
         }
 
-        public Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            int _result;
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string commandText = "DELETE FROM public.TblUser WHERE OrgId=@OrgId and BookieId=@bookieId and Id=@id";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _result = await connection.ExecuteAsync(commandText, parameters);
+                connection.Close();
+            }
+            return _result;
         }
     }
 }

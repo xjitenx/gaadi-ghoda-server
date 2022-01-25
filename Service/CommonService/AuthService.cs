@@ -13,6 +13,16 @@ namespace gaadi_ghoda_server.Service.CommonServie
             _authRepository = authRepository;
         }
 
+        public async Task<User> isValidUserCredentials(AuthRequest authRequest)
+        {
+            return await _authRepository.authenticateUserIdPassword(authRequest.LoginId, authRequest.Password);
+        }
+
+        public void logout()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool isValidCredentials(string loginId, string password)
         {
             if (string.IsNullOrWhiteSpace(loginId))
@@ -26,17 +36,6 @@ namespace gaadi_ghoda_server.Service.CommonServie
             }
 
             return true;
-        }
-
-
-        public async Task<User> isValidUserCredentials(AuthRequest authRequest)
-        {
-            return await _authRepository.authenticateUserIdPassword(authRequest.LoginId, authRequest.Password);
-        }
-
-        public void logout()
-        {
-            throw new NotImplementedException();
         }
     }
 }

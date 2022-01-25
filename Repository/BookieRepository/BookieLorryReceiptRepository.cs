@@ -1,4 +1,5 @@
-﻿using gaadi_ghoda_server.IRepository.IBookieRepository;
+﻿using Dapper;
+using gaadi_ghoda_server.IRepository.IBookieRepository;
 using gaadi_ghoda_server.Models;
 using Npgsql;
 using System.Data;
@@ -7,102 +8,66 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
 {
     public class BookieLorryReceiptRepository : IBookieLorryReceiptRepository
     {
-        public async Task<LorryReceipt> Save(LorryReceipt lorryReceipt)
+        private readonly string _connectionString;
+
+        public BookieLorryReceiptRepository(IConfiguration configuration)
         {
-            try
-            {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
-                    using (NpgsqlTransaction transaction = connection.BeginTransaction())
-                    {
-                        using (NpgsqlCommand command = connection.CreateCommand())
-                        {
-                            command.Transaction = transaction;
-                            command.CommandType = CommandType.Text;
-
-                            command.CommandText = "insert into public.tbl_lorry_receipt" +
-                                "(org_id, lorry_receipt_origin, lorry_receipt_destination, lorry_receipt_vehicle_no, lorry_receipt_weight, lorry_receipt_rate, lorry_receipt_party_id, lorry_receipt_broker_id)" +
-                                "values " +
-                                "(@orgId, @lorryReceiptOrigin, @lorryReceiptDestination, @lorryReceiptVehicleNo, @lorryReceiptWeight, @lorryReceiptRate, @lorryReceiptPartyId, @lorryReceiptBrokerId)";
-                            try
-                            {
-                                command.Parameters.AddWithValue("@orgId", "ORG_ID");
-                                command.Parameters.AddWithValue("@lorryReceiptOrigin", lorryReceipt.Origin);
-                                command.Parameters.AddWithValue("@lorryReceiptDestination", lorryReceipt.Destination);
-                                command.Parameters.AddWithValue("@lorryReceiptVehicleNo", lorryReceipt.VehicleNo);
-                                command.Parameters.AddWithValue("@lorryReceiptWeight", lorryReceipt.Weight);
-                                command.Parameters.AddWithValue("@lorryReceiptRate", lorryReceipt.Rate);
-                                command.Parameters.AddWithValue("@lorryReceiptPartyId", lorryReceipt.PartyId);
-                                command.Parameters.AddWithValue("@lorryReceiptBrokerId", lorryReceipt.BrokerId);
-
-                                if (await command.ExecuteNonQueryAsync() != 1)
-                                {
-                                    throw new InvalidProgramException();
-                                }
-                                transaction.Commit();
-                            }
-                            catch (Exception)
-                            {
-                                transaction.Rollback();
-                                connection.Close();
-                                throw;
-                            }
-                        }
-                        connection.Close();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            return lorryReceipt;
+            _connectionString = configuration.GetConnectionString("GaadiGhodaDb");
         }
 
-        public Task<LorryReceipt> Get(Guid id)
+        public async Task<LorryReceipt> Get(Guid id)
         {
-            throw new NotImplementedException();
+            LorryReceipt _lorryReceipt = new LorryReceipt();
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string commandText = "SELECT * FROM public.TblBookieLorryReceipt WHERE OrgId=@orgId and BookieId=@bookieId and Id=@id";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _lorryReceipt = await connection.QueryFirstAsync<LorryReceipt>(commandText, parameters);
+
+                connection.Close();
+            }
+            return _lorryReceipt;
         }
 
         public async Task<List<LorryReceipt>> Gets()
         {
-            List<LorryReceipt> lorryReceiptList = new List<LorryReceipt>();
-            try
+            List<LorryReceipt> _lorryReceiptList = new List<LorryReceipt>();
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
-                    using (var command = connection.CreateCommand())
-                    {
-                        //use command here
-                        command.CommandText = "select * from public.tbl_lorry_receipt where org_id='" + AppConstants.ORG_ID + "'";
-                        using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
-                        {
-                            while (reader.Read())
-                            {
-                                LorryReceipt lorryReceiptItem = new LorryReceipt();
-                                lorryReceiptItem.Id = reader.GetGuid(reader.GetOrdinal("lorry_receipt_id"));
-                                lorryReceiptItem.No = reader.GetInt32(reader.GetOrdinal("lorry_receipt_no"));
-                                lorryReceiptItem.Origin = reader.GetString(reader.GetOrdinal("lorry_receipt_origin"));
-                                lorryReceiptItem.Destination = reader.GetString(reader.GetOrdinal("lorry_receipt_destination"));
-                                lorryReceiptItem.VehicleNo = reader.GetString(reader.GetOrdinal("lorry_receipt_vehicle_no"));
-                                lorryReceiptItem.Weight = reader.GetDouble(reader.GetOrdinal("lorry_receipt_weight"));
-                                lorryReceiptItem.Rate = reader.GetDouble(reader.GetOrdinal("lorry_receipt_rate"));
-                                lorryReceiptItem.PartyId = reader.GetGuid(reader.GetOrdinal("lorry_receipt_party_id"));
-                                lorryReceiptItem.BrokerId = reader.GetGuid(reader.GetOrdinal("lorry_receipt_broker_id"));
-                                lorryReceiptList.Add(lorryReceiptItem);
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
+                connection.Open();
+
+                string commandText = "SELECT * FROM public.TblBookieLorryReceipt WHERE OrgId=@orgId and BookieId=@bookieId";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                _lorryReceiptList = (await connection.QueryAsync<LorryReceipt>(commandText, parameters)).ToList();
+
+                connection.Close();
             }
-            catch (Exception e)
+            return _lorryReceiptList;
+        }
+
+        public async Task<LorryReceipt> Save(LorryReceipt lorryReceipt)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                Console.WriteLine(e);
+                connection.Open();
+
+                string commandText = "INSERT INTO public.TblBookieLorryReceipt " +
+                            "(OrgId, BookieId, Origin, Destination, Weight, Rate, VehicleNo, PartyId, BrokerId) " +
+                            "VALUES " +
+                            "(xxORG_ID, xxBOOKIE_ID, @origin, @destination, @weight, @rate, @vehicleNo, @partyId, @brokerId)";
+                await connection.ExecuteAsync(commandText, lorryReceipt);
+                connection.Close();
             }
-            return lorryReceiptList;
+            return lorryReceipt;
         }
 
         public Task<LorryReceipt> Update(LorryReceipt lorryReceipt)
@@ -110,9 +75,22 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             throw new NotImplementedException();
         }
 
-        public Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            int _result;
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string commandText = "DELETE FROM public.TblBookieLorryReceipt WHERE OrgId=@OrgId and BookieId=@bookieId and Id=@id";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _result = await connection.ExecuteAsync(commandText, parameters);
+                connection.Close();
+            }
+            return _result;
         }
     }
 }

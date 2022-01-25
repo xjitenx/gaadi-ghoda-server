@@ -1,4 +1,5 @@
-﻿using gaadi_ghoda_server.IRepository.IBookieRepository;
+﻿using Dapper;
+using gaadi_ghoda_server.IRepository.IBookieRepository;
 using gaadi_ghoda_server.Models;
 using Npgsql;
 using System.Data;
@@ -7,104 +8,65 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
 {
     public class BookieBrokerRepository : IBookieBrokerRepository
     {
-        public Task<Broker> Get(Guid id)
+        private readonly string _connectionString;
+
+        public BookieBrokerRepository(IConfiguration configuration)
         {
-            throw new NotImplementedException();
+            _connectionString = configuration.GetConnectionString("GaadiGhodaDb");
+        }
+
+        public async Task<Broker> Get(Guid id)
+        {
+            Broker _broker = new Broker();
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string commandText = "SELECT * FROM public.TblBookieBroker WHERE OrgId=@orgId and BookieId=@bookieId and Id=@id";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _broker = await connection.QueryFirstAsync<Broker>(commandText, parameters);
+
+                connection.Close();
+            }
+            return _broker;
         }
 
         public async Task<List<Broker>> Gets()
         {
-            List<Broker> brokerList = new List<Broker>();
-            try
+            List<Broker> _brokerList = new List<Broker>();
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
-                    using (var command = connection.CreateCommand())
-                    {
-                        //use command here
-                        command.CommandText = "select * from public.tbl_bookie_broker where org_id='" + AppConstants.ORG_ID + "'";
-                        using (NpgsqlDataReader reader = await command.ExecuteReaderAsync())
-                        {
-                            while (reader.Read())
-                            {
-                                Broker brokerItem = new Broker();
-                                brokerItem.Id = reader.GetGuid(reader.GetOrdinal("broker_id"));
-                                brokerItem.Name = reader.GetString(reader.GetOrdinal("broker_name"));
-                                brokerItem.FirstName = reader.GetString(reader.GetOrdinal("broker_person_first_name"));
-                                brokerItem.LastName = reader.GetString(reader.GetOrdinal("broker_person_last_name"));
-                                brokerItem.EmailId = reader.GetString(reader.GetOrdinal("broker_email_id"));
-                                brokerItem.ContactNo = reader.GetString(reader.GetOrdinal("broker_contact_no"));
-                                brokerItem.Address = reader.GetString(reader.GetOrdinal("broker_address"));
-                                brokerItem.Country = reader.GetString(reader.GetOrdinal("broker_country"));
-                                brokerItem.State = reader.GetString(reader.GetOrdinal("broker_state"));
-                                brokerItem.City = reader.GetString(reader.GetOrdinal("broker_city"));
-                                brokerItem.ZipCode = reader.GetString(reader.GetOrdinal("broker_zip_code"));
-                                brokerList.Add(brokerItem);
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
+                connection.Open();
+
+                string commandText = "SELECT * FROM public.TblBookieBroker WHERE OrgId=@orgId and BookieId=@bookieId";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                _brokerList = (await connection.QueryAsync<Broker>(commandText, parameters)).ToList();
+
+                connection.Close();
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            return brokerList;
+            return _brokerList;
         }
 
         public async Task<Broker> Save(Broker broker)
         {
-            try
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
-                using (var connection = new NpgsqlConnection(AppConstants.CONNECTION_STRING))
-                {
-                    connection.Open();
-                    using (NpgsqlTransaction transaction = connection.BeginTransaction())
-                    {
-                        using (NpgsqlCommand command = connection.CreateCommand())
-                        {
-                            command.Transaction = transaction;
-                            command.CommandType = CommandType.Text;
+                connection.Open();
 
-                            command.CommandText = "insert into public.tbl_bookie_broker " +
-                                "(org_id, broker_name, broker_email_id, broker_person_first_name ,broker_person_last_name, broker_contact_no, broker_address, broker_country, broker_state, broker_city, broker_zip_code) " +
-                                "values " +
-                                "(@orgId, @brokerName, @brokerPersonFirstName, @brokerPersonLastName, @brokerEmailId, @brokerContactNo, @brokerAddress, @brokerCountry, @brokerState, @brokerCity, @brokerZipCode)";
-                            try
-                            {
-                                command.Parameters.AddWithValue("@orgId", "ORG_ID");
-                                command.Parameters.AddWithValue("@brokerName", broker.Name);
-                                command.Parameters.AddWithValue("@firstName", broker.FirstName);
-                                command.Parameters.AddWithValue("@lastName", broker.LastName);
-                                command.Parameters.AddWithValue("@brokerEmailId", broker.EmailId);
-                                command.Parameters.AddWithValue("@brokerContactNo", broker.ContactNo);
-                                command.Parameters.AddWithValue("@brokerAddress", broker.Address);
-                                command.Parameters.AddWithValue("@brokerCountry", broker.Country);
-                                command.Parameters.AddWithValue("@brokerState", broker.State);
-                                command.Parameters.AddWithValue("@brokerCity", broker.City);
-                                command.Parameters.AddWithValue("@brokerZipCode", broker.ZipCode);
-                                if (await command.ExecuteNonQueryAsync() != 1)
-                                {
-                                    throw new InvalidOperationException();
-                                }
-                                transaction.Commit();
-                            }
-                            catch (Exception)
-                            {
-                                transaction.Rollback();
-                                connection.Close();
-                                throw;
-                            }
-                        }
-                        connection.Close();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                string commandText = "INSERT INTO public.TblBookieBroker " +
+                            "(OrgID, BookieId, FirmName, FirstName, LastName, EmailId, ContactNo, Address, Country, State, City, ZipCode) " +
+                            "VALUES " +
+                            "(xxORG_ID, xxBOOKIE_ID, @firmName, @firstName, @lastName, @emailId, @contactNo, @address, @country, @state, @city, @zipCode)";
+                await connection.ExecuteAsync(commandText, broker);
+
+                connection.Close();
             }
             return broker;
         }
@@ -114,9 +76,23 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             throw new NotImplementedException();
         }
 
-        public Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            int _result;
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string commandText = "DELETE FROM public.TblBookieBroker WHERE OrgId=@OrgId and BookieId=@bookieId and Id=@id";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                _result = await connection.ExecuteAsync(commandText, parameters);
+
+                connection.Close();
+            }
+            return _result;
         }
     }
 }
