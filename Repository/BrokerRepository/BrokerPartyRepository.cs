@@ -5,27 +5,27 @@ namespace gaadi_ghoda_server.Repository.BrokerRepository
 {
     public class BrokerPartyRepository : IBrokerPartyRepository
     {
-        public Task<Party> Delete(Guid id)
+        public Task<Party> Get(Guid id, string accountId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Party> Get(Guid id)
+        public Task<List<Party>> Gets(string accountId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Party>> Gets()
+        public Task<Party> Save(Party party, string accountId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Party> Save(Party party)
+        public Task<Party> Update(Party party, string accountId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Party> Update(Party party)
+        public Task<int> Delete(Guid id, string accountId)
         {
             throw new NotImplementedException();
         }

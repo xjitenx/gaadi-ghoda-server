@@ -18,29 +18,29 @@ namespace gaadi_ghoda_server.Service.BookieService
         {
             _bookieLorryReceiptRepository = bookieLorryReceiptRepository;
         }
-        public async Task<LorryReceipt> Get(Guid id)
+        public async Task<LorryReceipt> Get(Guid id, string bookieId)
         {
-            return await _bookieLorryReceiptRepository.Get(id);
+            return await _bookieLorryReceiptRepository.Get(id, bookieId);
         }
 
-        public async Task<List<LorryReceipt>> Gets()
+        public async Task<List<LorryReceipt>> Gets(string bookieId)
         {
-            return await _bookieLorryReceiptRepository.Gets();
+            return await _bookieLorryReceiptRepository.Gets(bookieId);
         }
 
-        public async Task<LorryReceipt> Save(LorryReceipt lorryReceipt)
+        public async Task<LorryReceipt> Save(LorryReceipt lorryReceipt, string bookieId)
         {
-            return await _bookieLorryReceiptRepository.Save(lorryReceipt);
+            return await _bookieLorryReceiptRepository.Save(lorryReceipt, bookieId);
         }
 
-        public async Task<LorryReceipt> Update(LorryReceipt lorryReceipt)
+        public async Task<LorryReceipt> Update(LorryReceipt lorryReceipt, string bookieId)
         {
-            return await _bookieLorryReceiptRepository.Update(lorryReceipt);
+            return await _bookieLorryReceiptRepository.Update(lorryReceipt, bookieId);
         }
 
-        public async Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id, string bookieId)
         {
-            return await _bookieLorryReceiptRepository.Delete(id);
+            return await _bookieLorryReceiptRepository.Delete(id, bookieId);
         }
     }
 }

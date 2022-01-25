@@ -6,7 +6,7 @@ using System.Net;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/bookie/{bookieId}/lorryreceipt")]
     [ApiController]
     public class LorryReceiptController : ControllerBase
     {
@@ -17,11 +17,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<IActionResult> getLorryReceipt([FromBody] LorryReceipt lorryReceipt)
+        public async Task<IActionResult> getLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Get(lorryReceipt.Id));
+                return Ok(await _lorryReceiptService.Get(lorryReceipt.Id, bookieId));
             }
             catch (Exception e)
             {
@@ -30,11 +30,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpGet("gets")]
-        public async Task<IActionResult> getLorryReceiptList()
+        public async Task<IActionResult> getLorryReceiptList(string bookieId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Gets());
+                return Ok(await _lorryReceiptService.Gets(bookieId));
             }
             catch (Exception e)
             {
@@ -43,11 +43,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> addLorryReceipt([FromBody] LorryReceipt lorryReceipt)
+        public async Task<IActionResult> addLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Save(lorryReceipt));
+                return Ok(await _lorryReceiptService.Save(lorryReceipt, bookieId));
             }
             catch (Exception e)
             {
@@ -56,11 +56,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> updateLorryReceipt([FromBody] LorryReceipt lorryReceipt)
+        public async Task<IActionResult> updateLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Update(lorryReceipt));
+                return Ok(await _lorryReceiptService.Update(lorryReceipt, bookieId));
             }
             catch (Exception e)
             {
@@ -69,11 +69,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> deleteLorryReceipt([FromBody] LorryReceipt lorryReceipt)
+        public async Task<IActionResult> deleteLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
         {
             try
             {
-                int result = await _lorryReceiptService.Delete(lorryReceipt.Id);
+                int result = await _lorryReceiptService.Delete(lorryReceipt.Id, bookieId);
                 if (result == 1)
                 {
                     return Ok("Lorry Receipt Deleted Successfully");

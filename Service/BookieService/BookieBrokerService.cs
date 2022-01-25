@@ -18,29 +18,29 @@ namespace gaadi_ghoda_server.Service.BookieService
             _bookieBrokerRepository = bookieBrokerRepository;
         }
 
-        public Task<Broker> Get(Guid id)
+        public Task<Broker> Get(Guid id, string bookieId)
         {
-            return _bookieBrokerRepository.Get(id);
+            return _bookieBrokerRepository.Get(id, bookieId);
         }
 
-        public async Task<List<Broker>> Gets()
+        public async Task<List<Broker>> Gets(string bookieId)
         {
-            return await _bookieBrokerRepository.Gets();
+            return await _bookieBrokerRepository.Gets(bookieId);
         }
 
-        public async Task<Broker> Save(Broker broker)
+        public async Task<Broker> Save(Broker broker, string bookieId)
         {
-            return await _bookieBrokerRepository.Save(broker);
+            return await _bookieBrokerRepository.Save(broker, bookieId);
         }
 
-        public async Task<Broker> Update(Broker broker)
+        public async Task<Broker> Update(Broker broker, string bookieId)
         {
-            return await _bookieBrokerRepository.Update(broker);
+            return await _bookieBrokerRepository.Update(broker, bookieId);
         }
 
-        public async Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id, string bookieId)
         {
-            return await _bookieBrokerRepository.Delete(id);
+            return await _bookieBrokerRepository.Delete(id, bookieId);
         }
     }
 }

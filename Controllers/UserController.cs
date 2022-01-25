@@ -5,7 +5,7 @@ using System.Net;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {

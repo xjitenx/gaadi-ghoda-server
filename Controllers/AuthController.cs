@@ -5,7 +5,7 @@ using gaadi_ghoda_server.IService.ICommonService;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {

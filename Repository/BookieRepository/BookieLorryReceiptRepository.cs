@@ -15,7 +15,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             _connectionString = configuration.GetConnectionString("GaadiGhodaDb");
         }
 
-        public async Task<LorryReceipt> Get(Guid id)
+        public async Task<LorryReceipt> Get(Guid id, string bookieId)
         {
             LorryReceipt _lorryReceipt = new LorryReceipt();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -35,7 +35,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             return _lorryReceipt;
         }
 
-        public async Task<List<LorryReceipt>> Gets()
+        public async Task<List<LorryReceipt>> Gets(string bookieId)
         {
             List<LorryReceipt> _lorryReceiptList = new List<LorryReceipt>();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -54,7 +54,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             return _lorryReceiptList;
         }
 
-        public async Task<LorryReceipt> Save(LorryReceipt lorryReceipt)
+        public async Task<LorryReceipt> Save(LorryReceipt lorryReceipt, string bookieId)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -70,12 +70,12 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             return lorryReceipt;
         }
 
-        public Task<LorryReceipt> Update(LorryReceipt lorryReceipt)
+        public Task<LorryReceipt> Update(LorryReceipt lorryReceipt, string bookieId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id, string bookieId)
         {
             int _result;
             using (var connection = new NpgsqlConnection(_connectionString))

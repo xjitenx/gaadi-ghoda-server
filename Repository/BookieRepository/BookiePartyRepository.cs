@@ -15,7 +15,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             _connectionString = configuration.GetConnectionString("GaadiGhodaDb");
         }
 
-        public async Task<Party> Get(Guid id)
+        public async Task<Party> Get(Guid id, string accountId)
         {
             Party _party = new Party();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -35,7 +35,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             return _party;
         }
 
-        public async Task<List<Party>> Gets()
+        public async Task<List<Party>> Gets(string accountId)
         {
             List<Party> _partyList = new List<Party>();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -54,7 +54,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             return _partyList;
         }
 
-        public async Task<Party> Save(Party party)
+        public async Task<Party> Save(Party party, string accountId)
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
@@ -71,12 +71,12 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             return party;
         }
 
-        public Task<Party> Update(Party party)
+        public Task<Party> Update(Party party, string accountId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid id, string accountId)
         {
             int _result;
             using (var connection = new NpgsqlConnection(_connectionString))
