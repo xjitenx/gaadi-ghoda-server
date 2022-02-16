@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace gaadi_ghoda_server.Models
+﻿namespace gaadi_ghoda_server.Models
 {
     public class User
     {

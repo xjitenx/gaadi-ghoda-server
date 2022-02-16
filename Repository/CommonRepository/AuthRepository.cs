@@ -22,7 +22,7 @@ namespace gaadi_ghoda_server.Repository.CommonRepository
             {
                 connection.Open();
 
-                var CommandText = "select OrgId, Id, FirstName, LastName, EmailId, ContactNo from public.tbl_user where user_email_id = @userLoginId and user_password = @userPassword and user_enabled_YN = 'Y'";
+                var CommandText = "select OrgId, Id, FirstName, LastName, EmailId, ContactNo, Status from public.tbluser where EmailId = @userLoginId and password = @userPassword and status = 'Active'";
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@userLoginId", loginId, DbType.String, ParameterDirection.Input, 64);
                 parameters.Add("@userPassword", password, DbType.String, ParameterDirection.Input, 64);
