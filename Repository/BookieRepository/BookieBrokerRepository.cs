@@ -15,7 +15,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
             _connectionString = configuration.GetConnectionString("GaadiGhodaDb");
         }
 
-        public async Task<Broker> Get(Guid id, string bookieId)
+        public async Task<Broker> Get(string bookieId, string brokerId)
         {
             Broker _broker = new Broker();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -26,8 +26,8 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
 
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
-                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
-                parameters.Add("@id", id, DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", bookieId, DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@id", brokerId, DbType.Guid, ParameterDirection.Input);
                 _broker = await connection.QueryFirstAsync<Broker>(commandText, parameters);
 
                 connection.Close();
@@ -46,7 +46,7 @@ namespace gaadi_ghoda_server.Repository.BookieRepository
 
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@orgId", "xxORG_ID", DbType.Guid, ParameterDirection.Input);
-                parameters.Add("@bookieId", "xxBOOKIE_ID", DbType.Guid, ParameterDirection.Input);
+                parameters.Add("@bookieId", bookieId, DbType.Guid, ParameterDirection.Input);
                 _brokerList = (await connection.QueryAsync<Broker>(commandText, parameters)).ToList();
 
                 connection.Close();

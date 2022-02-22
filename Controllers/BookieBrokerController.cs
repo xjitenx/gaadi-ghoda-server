@@ -6,22 +6,22 @@ using System.Net;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("api/bookie/{bookieId}/lorryreceipt")]
+    [Route("api/bookie/{bookieId}/broker")]
     [ApiController]
-    public class LorryReceiptController : ControllerBase
+    public class BookieBrokerController : ControllerBase
     {
-        private readonly IBookieLorryReceiptService _lorryReceiptService;
-        public LorryReceiptController(IBookieLorryReceiptService lorryReceiptService)
+        private readonly IBookieBrokerService _bookieBrokerService;
+        public BookieBrokerController(IBookieBrokerService bookieBrokerService)
         {
-            _lorryReceiptService = lorryReceiptService;
+            _bookieBrokerService = bookieBrokerService;
         }
 
-        [HttpGet("get")]
-        public async Task<IActionResult> getLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
+        [HttpGet("{brokerId}")]
+        public async Task<IActionResult> getBroker(string bookieId, string brokerId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Get(lorryReceipt.Id, bookieId));
+                return Ok(await _bookieBrokerService.Get(brokerId, bookieId));
             }
             catch (Exception e)
             {
@@ -30,11 +30,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpGet("gets")]
-        public async Task<IActionResult> getLorryReceiptList(string bookieId)
+        public async Task<IActionResult> getBrokerList(string bookieId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Gets(bookieId));
+                return Ok(await _bookieBrokerService.Gets(bookieId));
             }
             catch (Exception e)
             {
@@ -43,11 +43,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> addLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
+        public async Task<IActionResult> addBroker([FromBody] Broker broker, string bookieId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Save(lorryReceipt, bookieId));
+                return Ok(await _bookieBrokerService.Save(broker, bookieId));
             }
             catch (Exception e)
             {
@@ -56,11 +56,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> updateLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
+        public async Task<IActionResult> updateBroker([FromBody] Broker broker, string bookieId)
         {
             try
             {
-                return Ok(await _lorryReceiptService.Update(lorryReceipt, bookieId));
+                return Ok(await _bookieBrokerService.Update(broker, bookieId));
             }
             catch (Exception e)
             {
@@ -69,16 +69,16 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> deleteLorryReceipt([FromBody] LorryReceipt lorryReceipt, string bookieId)
+        public async Task<IActionResult> deleteBroker([FromBody] Broker broker, string bookieId)
         {
             try
             {
-                int result = await _lorryReceiptService.Delete(lorryReceipt.Id, bookieId);
+                int result = await _bookieBrokerService.Delete(broker.Id, bookieId);
                 if (result == 1)
                 {
-                    return Ok("Lorry Receipt Deleted Successfully");
+                    return Ok("Broker Deleted Successfully");
                 }
-                return NotFound("Lorry Receipt Not Found");
+                return NotFound("Broker Not Found");
             }
             catch (Exception e)
             {

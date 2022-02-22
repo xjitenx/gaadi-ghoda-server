@@ -18,9 +18,9 @@ namespace gaadi_ghoda_server.Service.BookieService
             _bookieBrokerRepository = bookieBrokerRepository;
         }
 
-        public Task<Broker> Get(Guid id, string bookieId)
+        public Task<Broker> Get(string bookieId, string brokerId)
         {
-            return _bookieBrokerRepository.Get(id, bookieId);
+            return _bookieBrokerRepository.Get(bookieId, brokerId);
         }
 
         public async Task<List<Broker>> Gets(string bookieId)
