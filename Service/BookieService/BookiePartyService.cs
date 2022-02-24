@@ -18,29 +18,29 @@ namespace gaadi_ghoda_server.Service.BookieService
             _bookiePartyRepository = bookiePartyRepository;
         }
 
-        public async Task<Party> Get(Guid id, string accountId)
+        public async Task<Party> Get(Guid orgId, Guid bookieId, Guid partyId)
         {
-            return await _bookiePartyRepository.Get(id, accountId);
+            return await _bookiePartyRepository.Get(orgId, bookieId, partyId);
         }
 
-        public async Task<List<Party>> Gets(string accountId)
+        public async Task<List<Party>> Gets(Guid orgId, Guid bookieId)
         {
-            return await _bookiePartyRepository.Gets(accountId);
+            return await _bookiePartyRepository.Gets(orgId, bookieId);
         }
 
-        public async Task<Party> Save(Party party, string accountId)
+        public async Task<Party> Save(Guid orgId, Guid bookieId, Party party)
         {
-            return await _bookiePartyRepository.Save(party, accountId);
+            return await _bookiePartyRepository.Save(orgId, bookieId, party);
         }
 
-        public async Task<Party> Update(Party party, string accountId)
+        public async Task<Party> Update(Guid orgId, Guid bookieId, Party party)
         {
-            return await _bookiePartyRepository.Update(party, accountId);
+            return await _bookiePartyRepository.Update(orgId, bookieId, party);
         }
 
-        public async Task<int> Delete(Guid id, string accountId)
+        public async Task<int> Delete(Guid orgId, Guid bookieId, Guid partyId)
         {
-            return await _bookiePartyRepository.Delete(id, accountId);
+            return await _bookiePartyRepository.Delete(orgId, bookieId, partyId);
         }
     }
 }

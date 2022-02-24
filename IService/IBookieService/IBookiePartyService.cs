@@ -4,10 +4,10 @@ namespace gaadi_ghoda_server.IService.IBookieService
 {
     public interface IBookiePartyService
     {
-        Task<Party> Get(Guid id, string accountId);
-        Task<List<Party>> Gets(string accountId);
-        Task<Party> Save(Party party, string accountId);
-        Task<Party> Update(Party party, string accountId);
-        Task<int> Delete(Guid id, string accountId);
+        Task<Party> Get(Guid orgId, Guid bookieId, Guid partyId);
+        Task<List<Party>> Gets(Guid orgId, Guid bookieId);
+        Task<Party> Save(Guid orgId, Guid bookieId, Party party);
+        Task<Party> Update(Guid orgId, Guid bookieId, Party party);
+        Task<int> Delete(Guid orgId, Guid bookieId, Guid partyId);
     }
 }

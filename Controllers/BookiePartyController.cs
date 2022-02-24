@@ -8,7 +8,7 @@ using gaadi_ghoda_server.IService.IBrokerService;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("api/bookie/{bookieId}/party")]
+    [Route("api/{orgId}/bookie/{bookieId}/party")]
     [ApiController]
     public class BookiePartyController : ControllerBase
     {
@@ -18,12 +18,12 @@ namespace gaadi_ghoda_server.Controllers
             _bookiePartyService = bookiePartyService;
         }
 
-        [HttpPost("get")]
-        public async Task<IActionResult> getParty([FromBody] Party party, string accountId)
+        [HttpGet("get/{partyId}")]
+        public async Task<IActionResult> getParty([FromRoute] Guid orgId, [FromRoute] Guid bookieId, [FromRoute] Guid partyId)
         {
             try
             {
-                return Ok(await _bookiePartyService.Get(party.Id, accountId));
+                return Ok(await _bookiePartyService.Get(orgId, bookieId, partyId));
 
             }
             catch (Exception e)
@@ -33,11 +33,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpGet("gets")]
-        public async Task<IActionResult> getPartyList(string accountId)
+        public async Task<IActionResult> getPartyList([FromRoute] Guid orgId, [FromRoute] Guid bookieId)
         {
             try
             {
-                return Ok(await _bookiePartyService.Gets(accountId));
+                return Ok(await _bookiePartyService.Gets(orgId, bookieId));
             }
             catch (Exception e)
             {
@@ -46,11 +46,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> addParty([FromBody] Party party, string accountId)
+        public async Task<IActionResult> addParty([FromRoute] Guid orgId, [FromRoute] Guid bookieId, [FromBody] Party party)
         {
             try
             {
-                return Ok(await _bookiePartyService.Save(party, accountId));
+                return Ok(await _bookiePartyService.Save(orgId, bookieId, party));
             }
             catch (Exception e)
             {
@@ -58,12 +58,12 @@ namespace gaadi_ghoda_server.Controllers
             }
         }
 
-        [HttpPatch("update")]
-        public async Task<IActionResult> updateParty([FromBody] Party party, string accountId)
+        [HttpPost("update")]
+        public async Task<IActionResult> updateParty([FromRoute] Guid orgId, [FromRoute] Guid bookieId, [FromBody] Party party)
         {
             try
             {
-                return Ok(await _bookiePartyService.Save(party, accountId));
+                return Ok(await _bookiePartyService.Update(orgId, bookieId, party));
             }
             catch (Exception e)
             {
@@ -71,13 +71,13 @@ namespace gaadi_ghoda_server.Controllers
             }
         }
 
-        [HttpDelete("delete")]
-        public async Task<IActionResult> deleteParty([FromBody] Party party, string accountId)
+        [HttpDelete("delete/{partyId}")]
+        public async Task<IActionResult> deleteParty([FromRoute] Guid orgId, [FromRoute] Guid bookieId, Guid partyId)
         {
             try
             {
                 int result = 0;
-                result = await _bookiePartyService.Delete(party.Id, accountId);
+                result = await _bookiePartyService.Delete(orgId, bookieId, partyId);
                 if (result == 1)
                 {
                     return Ok("Party Deleted Successfully");

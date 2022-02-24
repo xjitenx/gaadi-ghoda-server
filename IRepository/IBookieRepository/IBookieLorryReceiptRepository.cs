@@ -4,10 +4,10 @@ namespace gaadi_ghoda_server.IRepository.IBookieRepository
 {
     public interface IBookieLorryReceiptRepository
     {
-        Task<LorryReceipt> Get(Guid id, string bookieId);
-        Task<List<LorryReceipt>> Gets(string bookieId);
-        Task<LorryReceipt> Save(LorryReceipt lorryReceipt, string bookieId);
-        Task<LorryReceipt> Update(LorryReceipt lorryReceipt, string bookieId);
-        Task<int> Delete(Guid id, string bookieId);
+        Task<LorryReceipt> Get(Guid orgId, Guid bookieId, Guid lorryReceiptId);
+        Task<List<LorryReceipt>> Gets(Guid orgId, Guid bookieId);
+        Task<LorryReceipt> Save(Guid orgId, Guid bookieId, LorryReceipt lorryReceipt);
+        Task<LorryReceipt> Update(Guid orgId, Guid bookieId, LorryReceipt lorryReceipt);
+        Task<int> Delete(Guid orgId, Guid bookieId, Guid lorryReceiptId);
     }
 }

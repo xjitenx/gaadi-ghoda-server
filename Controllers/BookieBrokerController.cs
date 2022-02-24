@@ -6,7 +6,7 @@ using System.Net;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("api/bookie/{bookieId}/broker")]
+    [Route("api/{orgId}/bookie/{bookieId}/broker")]
     [ApiController]
     public class BookieBrokerController : ControllerBase
     {
@@ -16,12 +16,12 @@ namespace gaadi_ghoda_server.Controllers
             _bookieBrokerService = bookieBrokerService;
         }
 
-        [HttpGet("{brokerId}")]
-        public async Task<IActionResult> getBroker(string bookieId, string brokerId)
+        [HttpGet("get/{brokerId}")]
+        public async Task<IActionResult> getBroker([FromRoute] Guid orgId, [FromRoute] Guid bookieId, [FromRoute] Guid brokerId)
         {
             try
             {
-                return Ok(await _bookieBrokerService.Get(brokerId, bookieId));
+                return Ok(await _bookieBrokerService.Get(orgId, bookieId, brokerId));
             }
             catch (Exception e)
             {
@@ -30,11 +30,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpGet("gets")]
-        public async Task<IActionResult> getBrokerList(string bookieId)
+        public async Task<IActionResult> getBrokerList([FromRoute] Guid orgId, [FromRoute] Guid bookieId)
         {
             try
             {
-                return Ok(await _bookieBrokerService.Gets(bookieId));
+                return Ok(await _bookieBrokerService.Gets(orgId, bookieId));
             }
             catch (Exception e)
             {
@@ -43,11 +43,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> addBroker([FromBody] Broker broker, string bookieId)
+        public async Task<IActionResult> addBroker([FromRoute] Guid orgId, [FromRoute] Guid bookieId, [FromBody] Broker broker)
         {
             try
             {
-                return Ok(await _bookieBrokerService.Save(broker, bookieId));
+                return Ok(await _bookieBrokerService.Save(orgId, bookieId, broker));
             }
             catch (Exception e)
             {
@@ -56,11 +56,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> updateBroker([FromBody] Broker broker, string bookieId)
+        public async Task<IActionResult> updateBroker([FromRoute] Guid orgId, [FromRoute] Guid bookieId, [FromBody] Broker broker)
         {
             try
             {
-                return Ok(await _bookieBrokerService.Update(broker, bookieId));
+                return Ok(await _bookieBrokerService.Update(orgId, bookieId, broker));
             }
             catch (Exception e)
             {
@@ -68,12 +68,12 @@ namespace gaadi_ghoda_server.Controllers
             }
         }
 
-        [HttpPost("delete")]
-        public async Task<IActionResult> deleteBroker([FromBody] Broker broker, string bookieId)
+        [HttpDelete("delete/{brokerId}")]
+        public async Task<IActionResult> deleteBroker([FromRoute] Guid orgId, [FromRoute] Guid bookieId, [FromRoute] Guid brokerId)
         {
             try
             {
-                int result = await _bookieBrokerService.Delete(broker.Id, bookieId);
+                int result = await _bookieBrokerService.Delete(orgId, bookieId, brokerId);
                 if (result == 1)
                 {
                     return Ok("Broker Deleted Successfully");
