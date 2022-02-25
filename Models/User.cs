@@ -9,5 +9,6 @@
         public string EmailId { get; set; }
         public string ContactNo { get; set; }
         public string Status { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

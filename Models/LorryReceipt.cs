@@ -11,5 +11,6 @@
         public double Rate { get; set; }
         public Guid PartyId { get; set; }
         public Guid BrokerId { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
