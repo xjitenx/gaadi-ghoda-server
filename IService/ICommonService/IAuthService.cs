@@ -4,8 +4,7 @@ namespace gaadi_ghoda_server.IService.ICommonService
 {
     public interface IAuthService
     {
-        public bool isValidCredentials(string loginId, string password);
-        public Task<User> isValidUserCredentials(AuthRequest authRequest);
+        public Task<User> validateUserCredentials(AuthRequest authRequest);
         void logout();
     }
 }

@@ -13,29 +13,29 @@ namespace gaadi_ghoda_server.Service.CommonService
             _authRepository = authRepository;
         }
 
-        public async Task<User> isValidUserCredentials(AuthRequest authRequest)
+        public async Task<User> validateUserCredentials(AuthRequest authRequest)
         {
-            return await _authRepository.authenticateUserIdPassword(authRequest.LoginId, authRequest.Password);
+            User _user = new User();
+
+            if (string.IsNullOrWhiteSpace(authRequest.LoginId) || string.IsNullOrWhiteSpace(authRequest.Password))
+            {
+                return _user;
+            }
+
+            _user = await _authRepository.authenticateLoginId(authRequest.LoginId);
+            if (_user == null || _user.OrgId == Guid.Empty || _user.Id == Guid.Empty)
+            {
+                return new User();
+            }
+            
+            bool result = await _authRepository.authenticateLoginPassword(_user.OrgId, _user.Id, authRequest.Password);
+
+            return result ? _user : new User();
         }
 
         public void logout()
         {
             throw new NotImplementedException();
-        }
-
-        public bool isValidCredentials(string loginId, string password)
-        {
-            if (string.IsNullOrWhiteSpace(loginId))
-            {
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

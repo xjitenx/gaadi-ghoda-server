@@ -26,13 +26,8 @@ namespace gaadi_ghoda_server.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (!_authService.isValidCredentials(authRequest.LoginId, authRequest.Password))
-                {
-                    return Unauthorized();
-                }
-
-                _user = await _authService.isValidUserCredentials(authRequest);
-                if (_user == null || _user.Id == Guid.Empty)
+                _user = await _authService.validateUserCredentials(authRequest);
+                if (_user == null || _user.OrgId == Guid.Empty || _user.Id == Guid.Empty)
                 {
                     return Unauthorized();
                 }
