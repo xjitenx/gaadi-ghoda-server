@@ -3,7 +3,7 @@
     public class Account
     {
         public Guid Id { get; set; }
-        public Guid Type { get; set; }
+        public string Type { get; set; }
         public string FirmName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -14,6 +14,7 @@
         public string State { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
+        public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

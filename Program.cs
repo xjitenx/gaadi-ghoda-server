@@ -9,7 +9,7 @@ using gaadi_ghoda_server.Repository.BrokerRepository;
 using gaadi_ghoda_server.Repository.CommonRepository;
 using gaadi_ghoda_server.Service.BookieService;
 using gaadi_ghoda_server.Service.BrokerService;
-using gaadi_ghoda_server.Service.CommonServie;
+using gaadi_ghoda_server.Service.CommonService;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -20,6 +20,8 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<IBookieBrokerService, BookieBrokerService>();
 builder.Services.AddScoped<IBookieLorryReceiptService, BookieLorryReceiptService>();
@@ -31,6 +33,8 @@ builder.Services.AddScoped<IBrokerPartyService, BrokerPartyService>();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 builder.Services.AddScoped<IBookieBrokerRepository, BookieBrokerRepository>();
 builder.Services.AddScoped<IBookieLorryReceiptRepository, BookieLorryReceiptRepository>();

@@ -5,22 +5,22 @@ using System.Net;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("api/{orgId}/account")]
+    [Route("api/{orgId}/role")]
     [ApiController]
-    public class AccountController : Controller
+    public class RoleController : Controller
     {
-        private readonly IAccountService _accountService;
-        public AccountController(IAccountService accountService)
+        private readonly IRoleService _roleService;
+        public RoleController(IRoleService roleService)
         {
-            _accountService = accountService;
+            _roleService = roleService;
         }
 
-        [HttpGet("get/{accountId}")]
-        public async Task<IActionResult> getAccount([FromRoute] Guid orgId, [FromRoute] Guid accountId)
+        [HttpGet("get/{roleId}")]
+        public async Task<IActionResult> getRole([FromRoute] Guid orgId, [FromRoute] Guid roleId)
         {
             try
             {
-                return Ok(await _accountService.Get(orgId, accountId));
+                return Ok(await _roleService.Get(orgId, roleId));
             }
             catch (Exception e)
             {
@@ -29,11 +29,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpGet("gets")]
-        public async Task<IActionResult> getAccountList([FromRoute] Guid orgId)
+        public async Task<IActionResult> getRoleList([FromRoute] Guid orgId)
         {
             try
             {
-                return Ok(await _accountService.Gets(orgId));
+                return Ok(await _roleService.Gets(orgId));
             }
             catch (Exception e)
             {
@@ -42,11 +42,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> addAccount([FromRoute] Guid orgId, [FromBody] Account account)
+        public async Task<IActionResult> addRole([FromRoute] Guid orgId, [FromBody] Role role)
         {
             try
             {
-                return Ok(await _accountService.Save(orgId, account));
+                return Ok(await _roleService.Save(orgId, role));
             }
             catch (Exception e)
             {
@@ -55,11 +55,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> updateAccount([FromRoute] Guid orgId, [FromBody] Account Account)
+        public async Task<IActionResult> updateRole([FromRoute] Guid orgId, [FromBody] Role role)
         {
             try
             {
-                return Ok(await _accountService.Update(orgId, Account));
+                return Ok(await _roleService.Update(orgId, role));
             }
             catch (Exception e)
             {
@@ -67,17 +67,17 @@ namespace gaadi_ghoda_server.Controllers
             }
         }
 
-        [HttpDelete("delete/{accountId}")]
-        public async Task<IActionResult> deleteAccount([FromRoute] Guid orgId, [FromRoute] Guid accountId)
+        [HttpDelete("delete/{roleId}")]
+        public async Task<IActionResult> deleteRole([FromRoute] Guid orgId, [FromRoute] Guid roleId)
         {
             try
             {
-                int result = await _accountService.Delete(orgId, accountId);
+                int result = await _roleService.Delete(orgId, roleId);
                 if (result == 1)
                 {
-                    return Ok("Account Deleted Successfully");
+                    return Ok("Role Deleted Successfully");
                 }
-                return NotFound("Account Not Found");
+                return NotFound("Role Not Found");
             }
             catch (Exception e)
             {

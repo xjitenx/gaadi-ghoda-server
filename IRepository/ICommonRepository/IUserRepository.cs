@@ -4,10 +4,10 @@ namespace gaadi_ghoda_server.IRepository.ICommonRepository
 {
     public interface IUserRepository
     {
-        Task<User> Get(Guid id);
-        Task<List<User>> Gets();
-        Task<User> Save(User user);
-        Task<User> Update(User user);
-        Task<int> Delete(Guid id);
+        Task<User> Get(Guid orgId, Guid userId);
+        Task<List<User>> Gets(Guid orgId);
+        Task<User> Save(Guid orgId, User user);
+        Task<User> Update(Guid orgId, User user);
+        Task<int> Delete(Guid orgId, Guid userId);
     }
 }

@@ -8,7 +8,7 @@ using gaadi_ghoda_server.IService.ICommonService;
 using gaadi_ghoda_server.IRepository.ICommonRepository;
 using Dapper;
 
-namespace gaadi_ghoda_server.Service.CommonServie
+namespace gaadi_ghoda_server.Service.CommonService
 {
     public class UserService : IUserService
     {
@@ -18,29 +18,29 @@ namespace gaadi_ghoda_server.Service.CommonServie
         {
             _userRepository = userRepository;
         }
-        public async Task<User> Get(Guid id)
+        public async Task<User> Get(Guid orgId, Guid userId)
         {
-            return await _userRepository.Get(id);
+            return await _userRepository.Get(orgId, userId);
         }
 
-        public async Task<List<User>> Gets()
+        public async Task<List<User>> Gets(Guid orgId)
         {
-            return await _userRepository.Gets();
+            return await _userRepository.Gets(orgId);
         }
 
-        public async Task<User> Save(User user)
+        public async Task<User> Save(Guid orgId, User user)
         {
-            return await _userRepository.Save(user);
+            return await _userRepository.Save(orgId, user);
         }
 
-        public async Task<User> Update(User user)
+        public async Task<User> Update(Guid orgId, User user)
         {
-            return await _userRepository.Update(user);
+            return await _userRepository.Update(orgId, user);
         }
 
-        public async Task<int> Delete(Guid id)
+        public async Task<int> Delete(Guid orgId, Guid userId)
         {
-            return await _userRepository.Delete(id);
+            return await _userRepository.Delete(orgId, userId);
         }
     }
 }

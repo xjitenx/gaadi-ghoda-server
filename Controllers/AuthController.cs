@@ -5,7 +5,7 @@ using gaadi_ghoda_server.IService.ICommonService;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace gaadi_ghoda_server.Controllers
             _authService = authService;
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> loginUser([FromBody] AuthRequest authRequest)
         {
             User _user;

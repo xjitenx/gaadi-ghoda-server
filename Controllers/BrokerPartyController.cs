@@ -18,8 +18,8 @@ namespace gaadi_ghoda_server.Controllers
             _brokerPartyService = brokerPartyService;
         }
 
-        [HttpPost("get")]
-        public async Task<IActionResult> getParty([FromBody] Party party, string accountId)
+        [HttpPost("get/{accountId}")]
+        public async Task<IActionResult> getParty([FromBody] Party party, [FromRoute] string accountId)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace gaadi_ghoda_server.Controllers
             }
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{accountId}")]
         public async Task<IActionResult> deleteParty([FromBody] Party party, string accountId)
         {
             try

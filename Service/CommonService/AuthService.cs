@@ -2,7 +2,7 @@
 using gaadi_ghoda_server.IService.ICommonService;
 using gaadi_ghoda_server.Models;
 
-namespace gaadi_ghoda_server.Service.CommonServie
+namespace gaadi_ghoda_server.Service.CommonService
 {
     public class AuthService : IAuthService
     {

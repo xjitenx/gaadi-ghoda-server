@@ -5,7 +5,7 @@ using System.Net;
 
 namespace gaadi_ghoda_server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/{orgId}/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -15,12 +15,12 @@ namespace gaadi_ghoda_server.Controllers
             _userService = userService;
         }
 
-        [HttpPost("get")]
-        public async Task<IActionResult> getUser([FromBody] User user)
+        [HttpGet("get/{userId}")]
+        public async Task<IActionResult> getUser([FromRoute] Guid orgId, [FromRoute] Guid userId)
         {
             try
             {
-                return Ok(await _userService.Get(user.Id));
+                return Ok(await _userService.Get(orgId, userId));
             }
             catch (Exception e)
             {
@@ -29,11 +29,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpGet("gets")]
-        public async Task<IActionResult> getUserList()
+        public async Task<IActionResult> getUserList([FromRoute] Guid orgId)
         {
             try
             {
-                return Ok(await _userService.Gets());
+                return Ok(await _userService.Gets(orgId));
             }
             catch (Exception e)
             {
@@ -42,11 +42,11 @@ namespace gaadi_ghoda_server.Controllers
         }
 
         [HttpPost("save")]
-        public async Task<IActionResult> addUser([FromBody] User user)
+        public async Task<IActionResult> addUser([FromRoute] Guid orgId, [FromBody] User user)
         {
             try
             {
-                return Ok(await _userService.Save(user));
+                return Ok(await _userService.Save(orgId, user));
             }
             catch (Exception e)
             {
@@ -54,12 +54,12 @@ namespace gaadi_ghoda_server.Controllers
             }
         }
 
-        [HttpPatch("update")]
-        public async Task<IActionResult> updateUser([FromBody] User user)
+        [HttpPost("update")]
+        public async Task<IActionResult> updateUser([FromRoute] Guid orgId, [FromBody] User user)
         {
             try
             {
-                return Ok(await _userService.Save(user));
+                return Ok(await _userService.Update(orgId, user));
             }
             catch (Exception e)
             {
@@ -67,12 +67,12 @@ namespace gaadi_ghoda_server.Controllers
             }
         }
 
-        [HttpDelete("delete")]
-        public async Task<IActionResult> deleteUser([FromBody] User user)
+        [HttpDelete("delete/{userId}")]
+        public async Task<IActionResult> deleteUser([FromRoute] Guid orgId, [FromRoute] Guid userId)
         {
             try
             {
-                int result = await _userService.Delete(user.Id);
+                int result = await _userService.Delete(orgId, userId);
                 if (result == 1)
                 {
                     return Ok("User Deleted Successfully");
